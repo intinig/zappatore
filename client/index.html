@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <title>Agricola Board</title>
+    <meta charset="UTF-8">
     <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
     <script src="j/jquery.board.js"></script>
     <script src="j/application.js"></script>
@@ -59,10 +60,27 @@
       #board div.group {
         height: auto;
       }
+      
+      #service {
+        background: #e0e0e0;
+        padding: 4px 2px;
+        border-bottom: 1px solid #ccc;
+      }
+      
+      #commands {
+        clear: both;
+      }
     </style>
   </head>
   <body>
-    <div id="board">
+    <div id="service">
+      <form action="#" id="login-form">
+        <label for="login">Login:</label> <input type="text" name="login" id="login" />
+        <label for="password">Password:</label> <input type="password" name="password" id="password"/>
+        <input type="submit" id="submit-login" value="Login" />
+      </form>
+    </div>
+    <div id="board" style="display:none">
       <div id="starting" class="group">
         <h4>Starting Actions</h4>
       </div>
@@ -91,9 +109,10 @@
         </div>
       </div>
     </div>
-    <div id="commands" style="clear:both">
+    <div id="commands">
       <form>
-        <input id="submitter" type="submit" value="Next Turn"/>
+        <input id="new-game" type="submit" value="New Game" style="display: none"/>
+        <input id="submitter" type="submit" value="Next Turn" style="display: none"/>
       </form>
     </div>
   </body>
