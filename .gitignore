@@ -1,2 +1,4 @@
 .bundle
+coverage
+.DS_Store
 Gemfile.lock

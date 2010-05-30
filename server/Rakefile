@@ -1,0 +1,15 @@
+require 'rubygems'
+require 'spec/rake/spectask'
+  
+task :default => [:spec]
+
+Spec::Rake::SpecTask.new do |t|
+   t.warning = false
+   t.rcov = false
+end
+
+desc "Run all examples with RCov"
+Spec::Rake::SpecTask.new('rcov') do |t|
+  t.rcov = true
+  t.rcov_opts = ['--exclude', 'spec,.bundle,/Library/Ruby/Gems']
+end

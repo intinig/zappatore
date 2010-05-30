@@ -13,3 +13,11 @@ set :environment, :test
 set :run, false
 set :raise_errors, true
 set :logging, false
+
+def login_as(username, password)
+  uid = REDIS.incr("global:nextUserId")
+  REDIS.set("uid:#{uid}:login", username)
+  REDIS.set("login:#{username}:uid", uid)
+  post '/login', :login => username, :password => password
+  JSON.parse(last_response.body)["auth"]
+end

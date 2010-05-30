@@ -22,7 +22,7 @@ jQuery.phaseLoop = function(data, phase, offset) {
 }
 
 jQuery.setupBoard = function() {
-  $.getJSON('http://localhost:4567/games/1/board', function(data) {
+  $.getJSON(Configuration.server + '/games/1/board', function(data) {
     for  (i in data.starting) {
       $("#starting").append($.actionSpace(data.starting[i]));
     }

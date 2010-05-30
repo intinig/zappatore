@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../game'
+#require File.dirname(__FILE__) + '/../game'
 
 # describe Game, "initialization" do
 #   it "should take a list of players" do

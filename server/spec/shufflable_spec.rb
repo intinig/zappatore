@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + "/../shufflable.rb"
+require File.dirname(__FILE__) + "/../lib/shufflable.rb"
 
 Array.class_eval do
   include Shufflable

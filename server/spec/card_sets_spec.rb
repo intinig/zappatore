@@ -65,7 +65,7 @@ describe CardSets::Turn do
     c = CardSets::Turn.cards
     d = CardSets::Turn.shuffled_cards
     c.should_not == d
-    d.each do |card|
+    d.flatten.each do |card|
       card.revealed.should be_false
     end
   end
