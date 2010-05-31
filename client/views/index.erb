@@ -3,9 +3,9 @@
   <head>
     <title>Agricola Board</title>
     <meta charset="UTF-8">
-    <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-    <script src="j/jquery.board.js"></script>
-    <script src="j/application.js"></script>
+    <script src="/j/jquery-1.4.2.min.js"></script>
+    <script src="/j/jquery.board.js"></script>
+    <script src="/j/application.js"></script>
     <style type="text/css">
       * {
         margin: 0;
@@ -14,7 +14,7 @@
       
       @font-face {
         font-family: "Inconsolata"; 
-        src: url('f/Inconsolata.otf');
+        src: url('/f/Inconsolata.otf');
       }
     
       body {
@@ -110,11 +110,12 @@
       </div>
     </div>
     <div id="commands">
+      <p id="status"></p>
       <form>
         <input id="enter-room" type="submit" value="Enter Room" style="display: none" class="command"/>
+        <input id="new-game" type="submit" value="New Game" style="display: none" class="command"/>
         <input id="submitter" type="submit" value="Next Turn" style="display: none" class="command"/>
       </form>
-      <p id="status"></p>
     </div>
   </body>
 </html>

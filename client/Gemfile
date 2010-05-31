@@ -2,9 +2,8 @@ source :gemcutter
 
 gem "sinatra"
 gem "json"
-gem "redis"
 gem "thin"
-gem "pusher"
+gem "curb"
 
 group :test do
   gem "rack-test"

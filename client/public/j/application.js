@@ -1,8 +1,24 @@
 var Configuration = {
-  server: 'http://localhost:4567'
+  server: 'http://zappatore.local:4567',
+  // apiKey: '0788cbceb5387c7f2eb8',
+  // channelName: 'test_channel'
 }
 
+// var server = new Pusher(Configuration.apiKey, Configuration.channelName);
+// 
+// server.bind('thing-create', function(thing) {
+//   alert('A thing was created: ' + thing.name);
+// });
+
 $(function() {
+  $.ajaxSetup({
+    error: function(xhr, statusText, err) {
+      console.log(xhr);
+      console.log(statusText);
+      console.log(err)
+    }
+  })
+  
   $.checkLogin();
   
   // $.setupBoard();
@@ -25,7 +41,7 @@ jQuery.login = function() {
   $("#password").val("");
   if (loginValue && passwordValue) {
     $.post(
-      Configuration.server + '/login', 
+      "/p?url=" + Configuration.server + '/login', 
       { 
         login: loginValue, 
         password: passwordValue
@@ -43,7 +59,7 @@ jQuery.login = function() {
 
 jQuery.checkLogin = function() {
   auth = $.getCookie("auth");
-  if (auth) {
+  if (auth && !(auth == undefined)) {
     Configuration.auth = auth;
     $.checkRoom(auth);
   }
@@ -54,7 +70,7 @@ jQuery.updateCredentials = function(loginValue) {
   $("#service").append("<p id=\"welcome\">Welcome, <strong>" + loginValue + "</strong> (<a href=\"#\" id=\"logout\">logout</a>)</p>");
   $("#logout").click(function() {
     auth = $.getCookie("auth");
-    $.getJSON(Configuration.server + "/logout/" + auth, function(data) {
+    $.getJSON("/p?url=" + Configuration.server + "/logout/" + auth, function(data) {
       $.resetLoginForm();
       $(".command").hide();
       $("#status").html("");
@@ -94,7 +110,7 @@ jQuery.deleteCookie = function(name) {
 }
 
 jQuery.createRoom = function() {
-  $.post(Configuration.server + "/rooms/" + Configuration.auth,
+  $.post("/p?url=" + Configuration.server + "/rooms/" + Configuration.auth,
   function(data) {
     $("#enter-room").hide();
     $("#new-game").show();
@@ -104,16 +120,17 @@ jQuery.createRoom = function() {
 }
 
 jQuery.getRoom = function(rid) {
-  $.get(Configuration.server + "/rooms/" + rid + "/" + Configuration.auth,
+  $.get("/p?url=" + Configuration.server + "/rooms/" + rid + "/" + Configuration.auth,
   function(getData) {
     $("#status").html("Room ID: <strong>" + rid + "</strong> - Players: <strong>" + getData.players + "</strong> (<a href=\"#\" id=\"exit-room\">quit</a>)")
     $("#exit-room").click(function() {
       $.ajax({
-        url: Configuration.server + '/rooms/' + rid + '/' + Configuration.auth,
+        url: "/p?url=" + Configuration.server + '/rooms/' + rid + '/' + Configuration.auth,
         type: 'DELETE',
         success: function() {
           $("#status").html('');
           $("#enter-room").show();
+          $("#new-game").hide();
         }
       })
     })
@@ -121,9 +138,10 @@ jQuery.getRoom = function(rid) {
 }
 
 jQuery.checkRoom = function(auth) {
-  $.getJSON(Configuration.server + "/sessions/" + auth, function(data) {
+  $.getJSON("/p?url=" + Configuration.server + "/sessions/" + auth, function(data) {
     $.updateCredentials(data.login);        
     if (data.room) {
+      $("#new-game").show();
       $.getRoom(data.room);
     } else {
       $("#enter-room").show();

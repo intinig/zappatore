@@ -20,4 +20,4 @@ def login_as(username, password)
   REDIS.set("login:#{username}:uid", uid)
   post '/login', :login => username, :password => password
   JSON.parse(last_response.body)["auth"]
-end
+end  

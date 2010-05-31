@@ -7,8 +7,25 @@ describe "Zappatore" do
     @app ||= Sinatra::Application
   end
   
-  # describe "POST /games" do
-  # end
+  describe "POST /games/rid/sid" do
+    it "should require a valid session and a valid room" do
+      auth = login_as("intinig", "cefalonia")
+      post "/games/sarabanda/#{auth}"
+      last_response.status.should == 404
+    end
+    
+    it "should require the caller to be in the room" do
+      auth = login_as("intinig", "cefalonia")
+      post "/rooms/#{auth}"
+      rid = JSON.parse(last_response.body)["id"]
+      auth = login_as("enzo", "pardon")
+      post "/games/#{rid}/#{auth}"
+      last_response.status.should == 404
+    end
+
+    it "should require a room"
+    it "should require a person in the room"
+  end
     
   describe "POST /login" do
     it "should require a username" do
