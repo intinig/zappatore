@@ -53,7 +53,7 @@ post '/rooms/:auth' do
   login = REDIS.get("uid:#{@uid}:login")
   REDIS.sadd("rid:#{rid}:players", login)
   REDIS.set("uid:#{@uid}:rid", rid)
-  # Pusher['things'].trigger('thing-create', {:name => "HELLO"})
+  Pusher['zappatore-main'].trigger('room-create', {:login => login, :rid => rid})
   j({:id => rid}.to_json)
 end
 
@@ -67,8 +67,10 @@ end
 delete '/rooms/:rid/:auth' do
   login_required(403)
   halt 404 unless (rid = REDIS.get("uid:#{@uid}:rid")) == params[:rid]
+  login = REDIS.get("uid:#{@uid}:login")
   REDIS.del("uid:#{@uid}:rid")
   REDIS.srem("rid:#{rid}:players", REDIS.get("uid:#{@uid}:login"))
+  Pusher['zappatore-main'].trigger('room-destroy', {:login => login, :rid => rid})
 end
 
 post '/login' do

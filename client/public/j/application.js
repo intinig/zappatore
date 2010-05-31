@@ -1,14 +1,18 @@
 var Configuration = {
   server: 'http://zappatore.local:4567',
-  // apiKey: '0788cbceb5387c7f2eb8',
-  // channelName: 'test_channel'
+  apiKey: '0788cbceb5387c7f2eb8',
+  channelName: 'zappatore-main'
 }
 
-// var server = new Pusher(Configuration.apiKey, Configuration.channelName);
-// 
-// server.bind('thing-create', function(thing) {
-//   alert('A thing was created: ' + thing.name);
-// });
+var server = new Pusher(Configuration.apiKey, Configuration.channelName);
+
+server.bind('room-create', function(room) {
+  $("#log").prepend('<p class="create"><strong>' + room.login + '</strong> just entered Room #' + room.rid + '</p>')
+});
+
+server.bind('room-destroy', function(room) {
+  $("#log").prepend('<p class="destroy"><strong>' + room.login + '</strong> has just closed Room #' + room.rid + '</p>')
+});
 
 $(function() {
   $.ajaxSetup({

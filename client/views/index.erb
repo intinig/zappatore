@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <script src="/j/jquery-1.4.2.min.js"></script>
     <script src="/j/jquery.board.js"></script>
+    <script src="http://js.pusherapp.com/1.4/pusher.min.js"></script>
     <script src="/j/application.js"></script>
     <style type="text/css">
       * {
@@ -70,6 +71,34 @@
       #commands {
         clear: both;
       }
+      
+      #log {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 50px;
+        padding: 0 0 5px 0;
+        color: #eee;
+        background: #333;
+        width: 100%;
+        overflow: hidden;
+      }
+      
+      strong {
+        font-weight: bold;
+      }
+      
+      .notice {
+        color: #ffffcc;
+      }
+      
+      .create {
+        color: #00ff00;
+      }
+      
+      .destroy {
+        color: #ff0000;
+      }
     </style>
   </head>
   <body>
@@ -116,6 +145,8 @@
         <input id="new-game" type="submit" value="New Game" style="display: none" class="command"/>
         <input id="submitter" type="submit" value="Next Turn" style="display: none" class="command"/>
       </form>
+    </div>
+    <div id="log">
     </div>
   </body>
 </html>
