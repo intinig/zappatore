@@ -64,6 +64,16 @@ get '/rooms/:rid/:auth' do
   j({:players => room}.to_json)
 end
 
+put '/rooms/:rid/:auth' do
+  login_required(403)
+  login = REDIS.get("uid:#{@uid}:login")
+  room = REDIS.smembers("rid:#{params[:rid]}:players")
+  halt 404 if room.nil?
+  REDIS.sadd("rid:#{params[:rid]}:players", login)
+  room = REDIS.smembers("rid:#{params[:rid]}:players")
+  j({:players => room}.to_json)
+end
+
 delete '/rooms/:rid/:auth' do
   login_required(403)
   halt 404 unless (rid = REDIS.get("uid:#{@uid}:rid")) == params[:rid]

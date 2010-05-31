@@ -69,6 +69,35 @@ describe "Zappatore" do
     end
   end
 
+  describe "PUT /rooms/rid/sid" do
+    before :each do
+      @auth = login_as("intinig", "cefalonia")
+    end
+    it "should require a valid room" do
+      put "/rooms/xxx/#{@auth}"
+      last_response.status.should == 404
+    end
+    
+    it "should require a valid auth" do
+      post "/rooms/#{@auth}"
+      rid = JSON.parse(last_response.body)["id"].to_i
+      put "/rooms/#{rid}/garzone"
+      last_response.status.should == 403
+    end
+    
+    it "should add a user to the room" do
+      post "/rooms/#{@auth}"
+      rid = JSON.parse(last_response.body)["id"].to_i
+      auth = login_as("pilu", "ciao")
+      put "/rooms/#{rid}/#{auth}"
+      last_response.status.should == 200
+      players = JSON.parse(last_response.body)["players"]
+      players.size.should == 2
+      players.include?("intinig").should be_true
+      players.include?("pilu").should be_true
+    end      
+  end
+  
   describe "POST /rooms/sid" do
     it "should require a session" do
       post "/rooms"
