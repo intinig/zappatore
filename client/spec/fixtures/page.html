@@ -1,0 +1,46 @@
+<div id="service">
+  <form action="#" id="signup-form" style="display:none">
+    <label for="login">Login:</label> <input type="text" name="signup-login" id="signup-login" />
+    <label for="signup-password">Password:</label> <input type="password" name="signup-password" id="signup-password"/>
+    <label for="signup-confirm-password">Confirm:</label> <input type="password" name="signup-confirm-password" id="signup-confirm-password"/>
+    <input type="submit" id="submit-signup" value="Signup" />
+    <a href="#" id="signup-cancel">Cancel</a>
+  </form>
+</div>
+<div id="board" style="display:none">
+  <div id="starting" class="group">
+    <h4>Starting Actions</h4>
+  </div>
+  <div id="default" class="group">
+    <h4>Default Actions</h4>
+  </div>
+  <div id="turns" class="group">
+    <h4>Turn Actions (turn: #)</h4>
+    <div id="r1" class="harvest">
+      <h4>Fase I</h4>
+    </div>
+    <div id="r2" class="harvest">
+      <h4>Fase II</h4>
+    </div>
+    <div id="r3" class="harvest">
+      <h4>Fase III</h4>
+    </div>
+    <div id="r4" class="harvest">
+      <h4>Fase IV</h4>
+    </div>
+    <div id="r5" class="harvest">
+      <h4>Fase V</h4>
+    </div>
+    <div id="r6" class="harvest">
+      <h4>Fase VI</h4>
+    </div>
+  </div>
+</div>
+<div id="commands">
+  <p id="status"></p>
+  <form>
+    <input id="enter-room" type="submit" value="Enter Room" style="display: none" class="command"/>
+    <input id="new-game" type="submit" value="New Game" style="display: none" class="command"/>
+    <input id="submitter" type="submit" value="Next Turn" style="display: none" class="command"/>
+  </form>
+</div>
