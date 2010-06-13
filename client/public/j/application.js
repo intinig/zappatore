@@ -1,60 +1,13 @@
-/*global Pusher:false, $:false, jQuery:false, _:false */
-
-var Configuration = {
-  server: 'http://zappatore.local:4567',
-  apiKey: '0788cbceb5387c7f2eb8',
-  channelName: 'zappatore-main'
-};
-
-var server = new Pusher(Configuration.apiKey, Configuration.channelName);
-
-server.bind('room-create', function(room) {
-  $("#log").prepend('<p class="create"><strong>' + room.players[0] + '</strong> just entered Room #' + room.rid + '</p>');
-  $("#rooms").show();
-  $("#rooms").append($.room(room));
-});
-
-server.bind('room-destroy', function(room) {
-  $("#log").prepend('<p class="destroy"><strong>' + room.players[0] + '</strong> has just closed Room #' + room.rid + '</p>');
-  $("#room" + room.rid).remove();
-});
+/*jslint passfail: true, browser: true, devel: true */
+/*global $:false, jQuery:false, _:false, Configuration:false, DataPusher:false, EventHandler:false */
 
 $(function() {  
-  $.ajaxSetup({
-    error: function(xhr) {
-      console.log(xhr);
-      alert(xhr.status + " " + xhr.responseText);
-    }
-  });
-  
-  $.checkLogin();
+  DataPusher.init();
+  Configuration.setDefaults();
     
-  $("#submit-login").click(function() {
-    $.login();
-    return false;
-  });
-
-  $("#submit-signup").click(function() {
-    $.signup();
-    return false;
-  });
+  $.checkLogin();
   
-  $("#enter-room").click(function() {
-    $.createRoom();
-    return false;
-  });
-  
-  $("#signup").click(function() {
-    $("#signup-form").show();
-    $("#login-form").hide();
-    return false;
-  });
-  
-  $("#signup-cancel").click(function() {
-    $("#signup-form").hide();
-    $("#login-form").show();
-    return false;
-  });
+  EventHandler.init();    
 });
 
 jQuery.signup = function() {

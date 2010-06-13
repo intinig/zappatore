@@ -1,3 +1,4 @@
+/*jslint passfail: true, browser: true, devel: true */
 /*global jQuery:false, $:false, Configuration:false, _:false */
 
 jQuery.actionSpace = function(action) {
