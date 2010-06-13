@@ -42,9 +42,13 @@ post '/games/:rid/:auth' do
   # new game here
 end
 
-get '/rooms/:auth' do
-  login_required(403)
-  j({:rooms => []}.to_json)
+get '/rooms' do
+  rooms = []
+  room_keys = REDIS.keys("rid:*:players")
+  room_keys.each do |k|
+    rooms << {:rid => k.split(":")[1], :players => REDIS.smembers(k)}
+  end
+  j({:rooms => rooms}.to_json)
 end
 
 post '/rooms/:auth' do
@@ -53,7 +57,7 @@ post '/rooms/:auth' do
   login = REDIS.get("uid:#{@uid}:login")
   REDIS.sadd("rid:#{rid}:players", login)
   REDIS.set("uid:#{@uid}:rid", rid)
-  Pusher['zappatore-main'].trigger('room-create', {:login => login, :rid => rid})
+  Pusher['zappatore-main'].trigger('room-create', {:players => [login], :rid => rid})
   j({:id => rid}.to_json)
 end
 
@@ -80,13 +84,25 @@ delete '/rooms/:rid/:auth' do
   login = REDIS.get("uid:#{@uid}:login")
   REDIS.del("uid:#{@uid}:rid")
   REDIS.srem("rid:#{rid}:players", REDIS.get("uid:#{@uid}:login"))
-  Pusher['zappatore-main'].trigger('room-destroy', {:login => login, :rid => rid})
+  Pusher['zappatore-main'].trigger('room-destroy', {:players => [login], :rid => rid})
+end
+
+post '/signup' do
+  halt 400, "Missing login" unless params[:login] && params[:login].match(/^\w+$/)
+  halt 400, "Missing password" unless params[:password]
+  halt 409, "Passwords do not match" unless params[:password] == params[:confirm]
+  halt 409, "Login already taken" if REDIS.get("login:#{params[:login]}:uid")
+  uid = REDIS.incr('global:nextUserId')
+  REDIS.set("login:#{params[:login]}:uid", uid)
+  REDIS.set("uid:#{uid}:login", params[:login])
+  REDIS.set("uid:#{uid}:password", params[:password])
+  auth = set_auth_data(uid)
+  j({:auth => auth}.to_json)
 end
 
 post '/login' do
   halt 400, "Missing login" unless params[:login] && params[:login].match(/^\w+$/)
-  if uid = REDIS.get("login:#{params[:login]}:uid")
-    # check for password
+  if (uid = REDIS.get("login:#{params[:login]}:uid")) && params[:password] == REDIS.get("uid:#{uid}:password")
     auth = set_auth_data(uid)
     j({:auth => auth}.to_json)
   else

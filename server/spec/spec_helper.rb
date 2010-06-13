@@ -18,6 +18,7 @@ def login_as(username, password)
   uid = REDIS.incr("global:nextUserId")
   REDIS.set("uid:#{uid}:login", username)
   REDIS.set("login:#{username}:uid", uid)
+  REDIS.set("uid:#{uid}:password", password)
   post '/login', :login => username, :password => password
   JSON.parse(last_response.body)["auth"]
 end  

@@ -3,6 +3,10 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "Zappatore" do
   include Rack::Test::Methods
   
+  before :each do
+    REDIS.flushall
+  end
+  
   def app
     @app ||= Sinatra::Application
   end
@@ -34,7 +38,8 @@ describe "Zappatore" do
     end
     
     it "should accept a username" do
-      post "/login", :login => "intinig"
+      login_as("intinig", "cefalonia")
+      post "/login", :login => "intinig", :password => "cefalonia"
       last_response.status.should == 200
       JSON.parse(last_response.body)["auth"].should_not be_nil
     end
@@ -45,27 +50,24 @@ describe "Zappatore" do
     end
     
     it "should set the username in the session" do
-      post "/login", :login => "intinig"
+      login_as("intinig", "cefalonia")
+      post "/login", :login => "intinig", :password => "cefalonia"
       last_response.body.should =~ /auth/
     end
   end
   
   describe "GET /rooms/sid" do
-    it "should require a session" do
-      get "/rooms"
-      last_response.status.should == 404
-    end
-
-    it "should require a valid session" do
-      get "/rooms/falsesession"
-      last_response.status.should == 403
-    end
-    
-    it "should work with a valid session" do
+    it "should return all rooms" do
       auth = login_as("intinig", "cefalonia")
-      get "/rooms/#{auth}"
+      post "/rooms/#{auth}"
+      auth = login_as("pilu", "foo")
+      post "/rooms/#{auth}"
+      get "/rooms"
       last_response.status.should == 200
-      JSON.parse(last_response.body)["rooms"].should == []
+      rooms = JSON.parse(last_response.body)["rooms"]
+      rooms.size.should == 2
+      rooms.first["players"].include?("intinig").should be_true
+      rooms.last["players"].include?("pilu").should be_true
     end
   end
 
@@ -147,7 +149,6 @@ describe "Zappatore" do
       auth = login_as("intinig", "cefalonia")
       post "/rooms/#{auth}"
       rid = JSON.parse(last_response.body)["id"]
-      
       delete "/rooms/#{rid}/#{auth}"
       last_response.status.should == 200
     end
@@ -161,6 +162,42 @@ describe "Zappatore" do
       delete "/rooms/#{rid}/#{auth}"
       REDIS.get("uid:#{uid}:rid").should be_nil
       REDIS.sismember("rid:#{rid}:players", "intinig").should be_false
+    end
+  end
+  
+  describe "POST /signup" do
+    it "should require a username" do
+      post "/signup"
+      last_response.status.should == 400
+    end
+        
+    it "should require a valid username" do
+      post "/signup", {:login => ";---$3inti\n"}
+      last_response.status.should == 400
+    end
+
+    it "should require password and password confirmation" do
+      post "/signup", {:login => 'intinig', :password => 'ciao'} 
+      last_response.status.should == 409
+
+      post "/signup", {:login => 'intinig', :confirm => 'ciao'} 
+      last_response.status.should == 400
+    end
+    
+    it "should check that password and password confirmation are the same" do
+      post "/signup", {:login => 'intinig', :password => 'ciao', :confirm => 'oaic'} 
+      last_response.status.should == 409
+    end
+
+    it "should signup if data is ok" do
+      post "/signup", {:login => 'intinig', :password => 'ciao', :confirm => 'ciao'} 
+      last_response.status.should == 200
+    end
+    
+    it "should check for uniqueness of username" do
+      post "/signup", {:login => 'intinig', :password => 'ciao', :confirm => 'ciao'} 
+      post "/signup", {:login => 'intinig', :password => 'ciao', :confirm => 'ciao'} 
+      last_response.status.should == 409
     end
   end
 end

@@ -1,34 +1,55 @@
+/*global jQuery:false, $:false, Configuration:false, _:false */
+
 jQuery.actionSpace = function(action) {
-  return '<div id="' + action["id"] +'" class="action">' + action["name"] + '</div>'  
-}
+  return '<div id="' + action.id +'" class="action">' + action.name + '</div>';
+};
+
+jQuery.room = function(room) {
+  var roomString = '<div id="room' + room.rid + '" class="room">Room ' + room.rid +' (' + room.players.length + '/5)<ul>';
+  _.each(room.players, function(player) {
+    roomString += '<li>' + player + '</li>';
+  });
+  return roomString + "</ul></div>";
+};
 
 jQuery.turnActionSpace = function(action) {
-  h = '<h5>Turno ' + action["turn"] + '</h5>';
-  if (action["revealed"]) {
-    p = '<p>' + action["name"];
+  var p, klass;
+  var h = '<h5>Turno ' + action.turn + '</h5>';
+  if (action.revealed) {
+    p = '<p>' + action.name;
     klass = "action";    
   } else {
-    p = '<p></p>'
-    klass = "action hidden"
+    p = '<p></p>';
+    klass = "action hidden";
   }
-  return '<div id="' + action["id"] + '" class="' + klass + '">' + h + p + '</div>';
-}
+  return '<div id="' + action.id + '" class="' + klass + '">' + h + p + '</div>';
+};
 
 jQuery.phaseLoop = function(data, phase, offset) {
-  for (i in data["phases"][phase - 1]) {
-    data["phases"][phase - 1][i].turn = (parseInt(i) + offset);
-    $("#r" + phase).append($.turnActionSpace(data["phases"][phase - 1][i]));
+  var i;
+  
+  for (i in data.phases[phase - 1]) {
+    if (data.phases[phase - 1].hasOwnProperty(i)) {
+      data.phases[phase - 1][i].turn = (parseInt(i, 10) + offset);
+      $("#r" + phase).append($.turnActionSpace(data.phases[phase - 1][i]));
+    }
   }
-}
+};
 
-jQuery.setupBoard = function() {
+jQuery.setupBoard = function() {  
   $.getJSON("/p?url=" + Configuration.server + '/games/1/board', function(data) {
-    for  (i in data.starting) {
-      $("#starting").append($.actionSpace(data.starting[i]));
+    var j;
+    
+    for (j in data.starting) {
+      if (data.starting.hasOwnProperty(j)) {
+        $("#starting").append($.actionSpace(data.starting[j]));        
+      }
     }
 
-    for (i in data["default"]) {
-      $("#default").append($.actionSpace(data["default"][i]));
+    for (j in data["default"]) {
+      if (data["default"].hasOwnProperty(j)) {
+        $("#default").append($.actionSpace(data["default"][j]));
+      }
     }
 
     $.phaseLoop(data, 1, 1);
@@ -39,12 +60,12 @@ jQuery.setupBoard = function() {
     $.phaseLoop(data, 6, 14);
 
     $.addHandlers();
-  })  
-}
+  });
+};
 
 jQuery.addHandlers = function() {
   $("#submitter").click(function() {
     alert('ciola');
     return false;
-  })
-}
+  });
+};
