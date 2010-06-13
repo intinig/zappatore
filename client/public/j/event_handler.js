@@ -1,18 +1,18 @@
-/*global $*/
+/*global $, LoginHandler, InterfaceActions, ServerInterface*/
 var EventHandler = {
   init: function() {
     $("#submit-login").click(function() {
-      $.login();
+      LoginHandler.login();
       return false;
     });
 
     $("#submit-signup").click(function() {
-      $.signup();
+      LoginHandler.signup();
       return false;
     });
 
     $("#enter-room").click(function() {
-      $.createRoom();
+      ServerInterface.createRoom();
       return false;
     });
 
@@ -27,5 +27,16 @@ var EventHandler = {
       $("#login-form").show();
       return false;
     }); 
+  },
+  enableLogout: function() {
+    $("#logout").click(function() {
+      var auth = $.getCookie("auth");
+      $.getJSON("/p?url=" + Configuration.server + "/logout/" + auth, function(data) {
+        InterfaceActions.resetLoginForm();
+        $(".command").hide();
+        $("#status").html("");
+        Session.auth = null;
+      });
+    });
   }  
 };
