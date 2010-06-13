@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="/Library/Ruby/Gems/1.8/gems/jspec-4.3.2/lib/jspec.css" />
+		<script src="/Library/Ruby/Gems/1.8/gems/jspec-4.3.2/lib/jspec.js"></script>
+		<script src="/Library/Ruby/Gems/1.8/gems/jspec-4.3.2/lib/jspec.xhr.js"></script>
+    <script src="../public/j/jquery-1.4.2.min.js"></script>
+    <script src="../public/j/underscore-min.js"></script>
+    <script src="http://js.pusherapp.com/1.4/pusher.min.js"></script>
+		<script src="../public/j/jquery.utils.js"></script>
+    <script src="../public/j/configuration.js"></script>
+    <script src="../public/j/data_pusher.js"></script>
+    <script src="../public/j/login_handler.js"></script>
+    <script src="../public/j/interface_actions.js"></script>
+    <script src="../public/j/server_interface.js"></script>
+    <script src="../public/j/event_handler.js"></script>
+    <script src="../public/j/jquery.board.js"></script>
+		<script src="unit/spec.helper.js"></script>
+		<script>
+			function runSuites() {
+				JSpec
+				.exec('unit/spec.js')
+				.run({ fixturePath: 'fixtures' })
+				.report()
+			}
+		</script>
+	</head>
+	<body class="jspec" onLoad="runSuites();">
+		<div id="jspec-top"><h2 id="jspec-title">JSpec <em><script>document.write(JSpec.version)</script></em></h2></div>
+		<div id="jspec"></div>
+		<div id="jspec-bottom"></div>
+	</body>
+</html>

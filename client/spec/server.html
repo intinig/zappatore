@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<script src="/public/jspec/jspec.js"></script>
+		<script src="/public/jspec/jspec.xhr.js"></script>
+		<script src="/public/j/jquery.utils.js"></script>
+    <script src="/public/j/configuration.js"></script>
+    <script src="/public/j/data_pusher.js"></script>
+    <script src="/public/j/login_handler.js"></script>
+    <script src="/public/j/interface_actions.js"></script>
+    <script src="/public/j/server_interface.js"></script>
+    <script src="/public/j/event_handler.js"></script>
+    <script src="/public/j/jquery.board.js"></script>
+    <script src="/public/j/application.js"></script>
+		<script src="/spec/unit/spec.helper.js"></script>
+    
+		<script>
+			function runSuites() {
+				JSpec
+				.exec('unit/spec.js')
+				.run({ reporter: JSpec.reporters.Server, verbose: true, failuresOnly: true, fixturePath: '/spec/fixtures' })
+				.report()
+			}
+		</script>
+	</head>
+	<body class="jspec" onLoad="runSuites();">
+	</body>
+</html>
