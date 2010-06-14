@@ -34,9 +34,13 @@ describe 'InterfaceActions'
   before_each
     rooms = $(fixture('rooms'))
     log = $(fixture('log'))
+    welcome = $(fixture('welcome'))
+    login_form = $(fixture('login-form'))
     dom = sandbox()
     dom.append(log)
     dom.append(rooms)
+    dom.append(welcome)
+    dom.append(login_form)
     $("body").append(dom)
 
     room = {players:['intinig'], rid:1}
@@ -72,6 +76,19 @@ describe 'InterfaceActions'
     
     it "should remove the room"
       rooms.html().should.eql("")
+    end
+  end
+  
+  describe '.resetLoginForm()'    
+    it "should remove #welcome"
+      InterfaceActions.resetLoginForm()
+      $('#welcome').length.should.eql 0
+    end
+    
+    it "should show login-form"
+      login_form.hide()
+      InterfaceActions.resetLoginForm()
+      login_form.should.be_visible
     end
   end
     
